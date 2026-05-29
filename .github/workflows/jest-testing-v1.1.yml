@@ -1,25 +1,28 @@
 name: Jest Testing
 
-on: push
+on:
+  push:
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      
+
       - name: Install dependencies
-        run: npm ci
-      
+        run: npm install
+
       - name: Run tests
         run: npm test -- --coverage --watchAll=false
-      
+
       - name: Show test results
         if: always()
         run: |
-          echo "Test Results:"
-          cat coverage/coverage-summary.json
+          echo "Coverage files:"
+          ls -R coverage || true
+          cat coverage/coverage-summary.json || true
