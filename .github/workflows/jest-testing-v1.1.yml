@@ -8,21 +8,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Show Repository Files
+        run: |
+          echo "Repository Contents:"
+          find . -type f
+
+      - name: Install Dependencies
         run: npm install
 
-      - name: Run tests
+      - name: Run Jest Tests with Coverage
         run: npm test -- --coverage --watchAll=false
 
-      - name: Show test results
+      - name: Show Coverage Files
         if: always()
         run: |
-          echo "Coverage files:"
+          echo "Coverage Contents:"
           ls -R coverage || true
           cat coverage/coverage-summary.json || true
+
+      - name: Upload Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
